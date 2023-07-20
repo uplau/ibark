@@ -33,10 +33,10 @@ pub struct Common<'a> {
     pub user_agent: Cow<'a, str>,
 
     #[serde(skip)]
-    _config: FileDisplay,
+    pub _config: FileDisplay,
 
     #[serde(skip)]
-    _dump_hide: bool,
+    pub _dump_hide: bool,
 }
 
 impl<'a> std::fmt::Debug for Common<'a> {
@@ -57,7 +57,7 @@ impl<'a> std::fmt::Debug for Common<'a> {
 }
 
 impl<'a> Common<'a> {
-    fn builder_default(builder: SyncBuilder) -> anyhow::Result<SyncBuilder> {
+    pub fn builder_default(builder: SyncBuilder) -> anyhow::Result<SyncBuilder> {
         Ok(builder
             .set_default("remote", fallback_remote())?
             .set_default("user_agent", fallback_user_agent())?)
@@ -216,7 +216,7 @@ impl FileBuilder {
 
         let mut is_lazy_using = IS_LAZY_USING.lock().unwrap();
         if *is_lazy_using {
-            println!("warn: is_lazy_using");
+            super::cli::Output::warn("is_lazy_using, skip");
             return;
         }
 

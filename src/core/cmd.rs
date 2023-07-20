@@ -19,7 +19,7 @@ pub struct GlobalOptions {
         short = 'C',
         long = "config",
         value_name = "PATHS",
-        help = "Specify configuration files."
+        help = "Specify configuration files"
     )]
     pub config_file_paths: Vec<std::path::PathBuf>,
 
@@ -63,9 +63,9 @@ pub enum Commands {
     /// Ping remote.
     Ping,
 
-    /// [WIP]Send once notification.
+    /// Send once notification.
     #[command(arg_required_else_help = true)]
-    Send,
+    Send(super::send::SendArgs),
 
     /// [WIP]Web interface.
     #[command(arg_required_else_help = true)]
