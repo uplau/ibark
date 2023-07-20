@@ -60,8 +60,8 @@ pub enum Commands {
     /// Get remote info.
     Info(GlobalOptions),
 
-    /// [WIP]Ping remote.
-    Ping,
+    /// Ping remote.
+    Ping(GlobalOptions),
 
     /// [WIP]Send once notification.
     #[command(arg_required_else_help = true)]
