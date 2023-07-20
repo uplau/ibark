@@ -55,13 +55,13 @@ pub struct GlobalOptions {
 #[derive(clap::Subcommand, Debug)]
 pub enum Commands {
     /// Get remote healthz.
-    Healthz(GlobalOptions),
+    Healthz,
 
     /// Get remote info.
-    Info(GlobalOptions),
+    Info,
 
     /// Ping remote.
-    Ping(GlobalOptions),
+    Ping,
 
     /// [WIP]Send once notification.
     #[command(arg_required_else_help = true)]
