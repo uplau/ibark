@@ -23,15 +23,6 @@ pub fn fallback_user_agent<'a>() -> &'a str {
     crate::user_agent!()
 }
 
-pub trait TCommon
-where
-    Self: Sized,
-{
-    fn builder_default(builder: SyncBuilder) -> anyhow::Result<SyncBuilder>;
-    fn dump_ready(self) -> anyhow::Result<()>;
-    fn from_cmd<T>(global: super::cmd::GlobalOptions, args: T) -> anyhow::Result<Self>;
-}
-
 #[derive(Default, serde::Deserialize)]
 #[serde(default)]
 pub struct Common<'a> {
@@ -52,7 +43,7 @@ impl<'a> std::fmt::Debug for Common<'a> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let mut f: std::fmt::DebugStruct<'_, '_> =
             // f.debug_struct(std::any::type_name::<Self>().split("::").last().unwrap());
-            f.debug_struct("_");
+        f.debug_struct("CommonConf");
 
         f.field("remote", &self.remote);
         f.field("user_agent", &self.user_agent);
@@ -65,21 +56,20 @@ impl<'a> std::fmt::Debug for Common<'a> {
     }
 }
 
-impl<'a> TCommon for Common<'a> {
+impl<'a> Common<'a> {
     fn builder_default(builder: SyncBuilder) -> anyhow::Result<SyncBuilder> {
         Ok(builder
             .set_default("remote", fallback_remote())?
             .set_default("user_agent", fallback_user_agent())?)
     }
 
-    fn dump_ready(mut self) -> anyhow::Result<()> {
+    pub fn dump(mut self) -> anyhow::Result<()> {
         self.remote = super::bark::Remote::dump(&self.remote)?.into();
+        println!("{:#?}", self);
         Ok(())
     }
 
-    fn from_cmd<T>(global: super::cmd::GlobalOptions, args: T) -> anyhow::Result<Self> {
-        drop(args);
-
+    pub fn from_cmd(global: super::cmd::GlobalOptions) -> anyhow::Result<Self> {
         let mut fb = if global.config_file_paths.is_empty() {
             super::conf::FileBuilder::with_preset()?
         } else {
@@ -91,7 +81,7 @@ impl<'a> TCommon for Common<'a> {
 
         let mut _self: Self = fb.builder.build()?.try_deserialize()?;
         _self._config = FileDisplay::new(fb.sources);
-        _self._dump_hide = global.dump >= 2;
+        _self._dump_hide = global.dump_level >= 2;
 
         // real
         super::bark::Remote::verify(&_self.remote)?;

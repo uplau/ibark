@@ -26,13 +26,13 @@ pub struct GlobalOptions {
     #[arg(
         global = true,
         short = 'D',
-        long,
+        long = "dump",
         action = clap::ArgAction::Count,
         default_value_t = 0,
         value_parser = clap::value_parser!(u8).range(0..=2),
         help="Just dump data, will not execute [range: 0..=2]"
     )]
-    pub dump: u8,
+    pub dump_level: u8,
 
     #[arg(
         global = true,
@@ -54,8 +54,8 @@ pub struct GlobalOptions {
 
 #[derive(clap::Subcommand, Debug)]
 pub enum Commands {
-    /// [WIP]Get remote healthz.
-    Healthz,
+    /// Get remote healthz.
+    Healthz(GlobalOptions),
 
     /// [WIP]Get remote info.
     Info,

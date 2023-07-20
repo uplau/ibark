@@ -146,7 +146,7 @@ mod tests {
     use tokio::{runtime::Runtime, task};
 
     // #[test]
-    fn dump_cli_main_help() {
+    fn dump_help() {
         let cli = Main::parse_from(["", "--help"]);
         dbg!(&cli);
     }
