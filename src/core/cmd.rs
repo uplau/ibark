@@ -57,8 +57,8 @@ pub enum Commands {
     /// Get remote healthz.
     Healthz(GlobalOptions),
 
-    /// [WIP]Get remote info.
-    Info,
+    /// Get remote info.
+    Info(GlobalOptions),
 
     /// [WIP]Ping remote.
     Ping,
