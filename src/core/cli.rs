@@ -7,13 +7,17 @@ use tokio::{sync::Semaphore, time};
 
 /// iBark is a fully featured Bark cross-platform command line tool written in Rust.
 #[derive(Debug, Parser)]
-#[command(version)]
+#[command(arg_required_else_help = true, version)]
 pub struct Main {
+    /// If provided, outputs the completion file for given shell
+    #[arg(short, long = "GEN", value_name = "SHELL", value_enum)]
+    pub generator: Option<clap_complete::Shell>,
+
     #[command(flatten)]
     pub global: super::cmd::GlobalOptions,
 
     #[command(subcommand)]
-    pub command: super::cmd::Commands,
+    pub command: Option<super::cmd::Commands>,
 }
 
 impl Main {
@@ -117,6 +121,16 @@ impl Main {
 
         pb_task.finish();
         Ok(())
+    }
+
+    pub fn output_completions<S: clap_complete::Generator>(shell: S, command: &mut clap::Command) {
+        use clap_complete::generate;
+        generate(
+            shell,
+            command,
+            command.get_name().to_string(),
+            &mut std::io::stdout(),
+        );
     }
 }
 
