@@ -88,7 +88,7 @@ mod tests {
         let miscs = ["healthz", "info", "ping"];
 
         for misc in miscs.iter() {
-            let cli = cli::Main::parse_from(["", misc, "-D"]);
+            let cli = cli::Main::parse_from(["", misc, "-DD"]);
             match cli.command {
                 cmd::Commands::Healthz => misc::exec(cli.global, "healthz")?,
                 cmd::Commands::Info => misc::exec(cli.global, "info")?,
