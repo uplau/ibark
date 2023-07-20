@@ -4,19 +4,22 @@ use tokio::{runtime::Runtime, sync::Semaphore, task::JoinSet};
 
 #[derive(clap::Args, Debug)]
 pub struct SendArgs {
+    /// Specify notification contexts
     #[arg(
         required = false,
         short,
         long,
         value_name = "KEYVAL",
+        value_hint = clap::ValueHint::Other,
         value_parser = super::cmd::parse_key_val::<String,String>,
-        help = "Specify notification contexts",
+        long_help = "Specify notification contexts\n\nSee more at https://github.com/Finb/bark-server/blob/master/docs/API_V2.md#push"
     )]
     pub contexts: Vec<(String, String)>,
 
+    /// Device name from the config file or your full input
     #[arg(
         required = true,
-        help = "Device name from the config file or your full input"
+        value_hint = clap::ValueHint::Other,
     )]
     pub devices: Vec<String>,
 
@@ -234,7 +237,7 @@ mod tests {
         crate::println_dash!(50);
 
         let cli = cli::Main::parse_from(args);
-        match cli.command {
+        match cli.command.unwrap() {
             cmd::Commands::Send(args) => exec(cli.global, args)?,
             _ => unreachable!(),
         }
@@ -253,7 +256,7 @@ mod tests {
 
         let cli =
             cli::Main::parse_from(["", "send", "-C", secret.to_str().unwrap(), "d", "aes", "-D"]);
-        match cli.command {
+        match cli.command.unwrap() {
             cmd::Commands::Send(args) => exec(cli.global, args)?,
             _ => unreachable!(),
         }
@@ -271,7 +274,7 @@ mod tests {
 
         let cli = cli::Main::parse_from(["", "send", "-C", secret.to_str().unwrap(), "d", "aes"]);
 
-        match cli.command {
+        match cli.command.unwrap() {
             cmd::Commands::Send(args) => exec(cli.global, args)?,
             _ => unreachable!(),
         }

@@ -408,7 +408,7 @@ mod tests {
             crate::println_dash!(20);
         }
 
-        for input in args.clone().into_iter() {
+        for input in args.into_iter() {
             dbg!(Device::new_request(
                 input.as_ref(),
                 &reqwest::Client::new(),

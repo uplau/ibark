@@ -89,7 +89,7 @@ mod tests {
 
         for misc in miscs.iter() {
             let cli = cli::Main::parse_from(["", misc, "-DD"]);
-            match cli.command {
+            match cli.command.unwrap() {
                 cmd::Commands::Healthz => misc::exec(cli.global, "healthz")?,
                 cmd::Commands::Info => misc::exec(cli.global, "info")?,
                 cmd::Commands::Ping => misc::exec(cli.global, "ping")?,
@@ -107,7 +107,7 @@ mod tests {
 
         for misc in miscs.iter() {
             let cli = cli::Main::parse_from(["", misc]);
-            match cli.command {
+            match cli.command.unwrap() {
                 cmd::Commands::Healthz => misc::exec(cli.global, "healthz")?,
                 cmd::Commands::Info => misc::exec(cli.global, "info")?,
                 cmd::Commands::Ping => misc::exec(cli.global, "ping")?,

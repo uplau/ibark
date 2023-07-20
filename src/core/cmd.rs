@@ -13,16 +13,19 @@ where
 
 #[derive(clap::Args, Debug)]
 pub struct GlobalOptions {
+    /// Specify configuration files.
     #[arg(
         required = false,
         global = true,
         short = 'C',
         long = "config",
         value_name = "PATHS",
-        help = "Specify configuration files"
+        value_hint = clap::ValueHint::AnyPath,
+        long_help = "Specify configuration files\n\nUsing this option will override the preset source"
     )]
     pub config_file_paths: Vec<std::path::PathBuf>,
 
+    /// Just dump data, will not execute [range: 0..=2].
     #[arg(
         global = true,
         short = 'D',
@@ -30,7 +33,7 @@ pub struct GlobalOptions {
         action = clap::ArgAction::Count,
         default_value_t = 0,
         value_parser = clap::value_parser!(u8).range(0..=2),
-        help="Just dump data, will not execute [range: 0..=2]"
+        long_help="Just dump data, will not execute [range: 0..=2]\n\nUsing -D will dump related configuration\nUsing -DD will dump ⬆️  and configuration source"
     )]
     pub dump_level: u8,
 
@@ -38,6 +41,7 @@ pub struct GlobalOptions {
         global = true,
         short = 'R',
         long,
+        value_hint = clap::ValueHint::Url,
         help = format!("Specify remote [fallback: {}]", super::conf::fallback_remote())
     )]
     pub remote: Option<String>,
@@ -47,6 +51,7 @@ pub struct GlobalOptions {
         short = 'U',
         long,
         value_name = "AGENT",
+        value_hint = clap::ValueHint::Other,
         help = format!("Specify user-agent [fallback: {}]", super::conf::fallback_user_agent())
     )]
     pub user_agent: Option<String>,
