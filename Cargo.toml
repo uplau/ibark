@@ -17,6 +17,7 @@ config = { version = "0.13", default-features = false, features = [
 ] }
 directories = "5"
 hex = "0.4"
+human-panic = "1"
 indicatif = { version = "0.17" }
 lazy_static = "1.4"
 openssl = { version = "0.10", features = ["vendored"] }

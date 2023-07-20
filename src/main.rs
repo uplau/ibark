@@ -4,6 +4,6 @@ mod core;
 mod macros;
 mod util;
 
-fn main() {
-    println!("Hello, world!");
+fn main() -> anyhow::Result<()> {
+    crate::core::app::start()
 }

@@ -1,3 +1,5 @@
+pub(crate) mod app;
+
 mod bark;
 mod cli;
 mod cmd;
