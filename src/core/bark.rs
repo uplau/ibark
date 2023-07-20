@@ -36,7 +36,7 @@ impl Contexts {
                     update.insert("copy".into(), v.replace("\\n", "\n"));
                 }
                 "cat" | "category" => {
-                    // warn: no use yet
+                    super::cli::Output::warn("bark_context_category is not used yet");
                     // update.insert("category".into(), v);
                 }
                 "g" | "group" => {
@@ -357,6 +357,8 @@ mod tests {
                 "b"=>r#"Hello 👋\nWorld🌍"#,
                 "bdg"=>"100",
                 "l"=>"active",
+                "cat"=>"test",
+                "g"=>""
             }
             .into_iter()
             .map(|(k, v)| (k.into(), v.into()))
