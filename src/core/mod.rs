@@ -1,1 +1,2 @@
+mod cmd;
 mod conf;
