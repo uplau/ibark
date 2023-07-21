@@ -1,5 +1,5 @@
 use indicatif::ProgressBar;
-use std::{borrow::Cow, collections::HashMap, sync::Arc};
+use std::{collections::HashMap, sync::Arc};
 use tokio::{runtime::Runtime, sync::Semaphore, task::JoinSet};
 
 #[derive(clap::Args, Debug)]
@@ -76,8 +76,7 @@ impl<'a> SendConf<'a> {
         .map(|(k, v)| (k.into(), v.into()))
         .collect::<HashMap<String, String>>();
 
-        let mut builder = super::conf::Common::builder_default(builder)?;
-        Ok(builder
+        Ok(super::conf::Common::builder_default(builder)?
             .set_default("contexts", default_contexts)?
             .set_default("limit_conn", super::conf::fallback_limit_conn())?)
     }
@@ -138,7 +137,7 @@ pub fn exec(global: super::cmd::GlobalOptions, args: SendArgs) -> anyhow::Result
         "Send -R {} -l {}",
         super::bark::Remote::scheme_host_port(&conf.common.remote)?,
         conf.limit_conn
-    )));
+    )))?;
 
     let client = reqwest::Client::builder()
         .user_agent(conf.common.user_agent.as_ref())
