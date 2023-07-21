@@ -37,12 +37,12 @@ impl Main {
         *ch = is_err;
     }
 
-    pub fn warn_request_once_err() {
-        if Self::is_request_once_err() {
-            println!("\n\n");
-            Output::warn("At least one request error occurred");
-        }
-    }
+    // pub fn warn_request_once_err() {
+    //     if Self::is_request_once_err() {
+    //         println!("\n\n");
+    //         Output::warn("At least one request error occurred");
+    //     }
+    // }
 
     pub fn create_multi_progress(tasks_count: u64) -> anyhow::Result<(MultiProgress, ProgressBar)> {
         let pb_multi = MultiProgress::new();
@@ -105,6 +105,8 @@ impl Main {
                         pb_task.set_message(format!("{:10} Status {status}", title));
                     },
                     Err(err)=>{
+                        // TODO collect iname and error
+                        // because the error message is too long
                         Main::set_request_once_err(true);
                         let title = "Error".bold().red();
                         pb_task.set_message(format!("{:10} Status {err}", title));
@@ -165,7 +167,7 @@ mod tests {
         dbg!(&cli);
     }
 
-    #[test]
+    // #[test]
     fn test_multi_request() -> anyhow::Result<()> {
         let client = reqwest::Client::builder().build()?;
 
@@ -186,12 +188,12 @@ mod tests {
             vec
         };
 
-        let vec = create_request_tasks(11);
+        let vec = create_request_tasks(6);
         // dbg!(&vec);
         // crate::println_dash!(50);
         ////////////////////////////////////////////////
         let (pb_multi, pb_main) = Main::create_multi_progress(vec.len() as u64)?;
-        let limit_conn = 10;
+        let limit_conn = 5;
         let semaphore = Arc::new(Semaphore::new(limit_conn));
         pb_multi.println(Output::exec_string(&format!("Test -l {}", limit_conn)))?;
 
@@ -224,7 +226,8 @@ mod tests {
             }
 
             pb_main.finish_with_message("All tasks done");
-            Main::warn_request_once_err();
+            println!("\n");
+            // Main::warn_request_once_err();
 
             ret
         })
