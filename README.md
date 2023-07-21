@@ -9,7 +9,7 @@ iBark is a fully featured [Bark](https://github.com/Finb/Bark) cross-platform co
 
 From now on, easily and securely send notifications to your apple devices from the terminal or web interface.
 
-![demo](https://github.com/uplau/ibark/assets/139003180/79e77bc4-f323-4c09-b64e-ef8f49f3f303)
+![demo](./.assets/demo.svg?raw=true)
 
 ## Table of Contents
 
