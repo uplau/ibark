@@ -178,7 +178,8 @@ pub fn exec(global: super::cmd::GlobalOptions, args: SendArgs) -> anyhow::Result
         }
 
         pb_main.finish_with_message("All tasks done");
-        super::cli::Main::warn_request_once_err();
+        println!("\n");
+        // super::cli::Main::warn_request_once_err();
 
         ret
     })
