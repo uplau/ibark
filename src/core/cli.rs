@@ -149,7 +149,7 @@ impl Output {
     }
 
     pub fn warn(s: &str) {
-        println!("{}{}", "WARN: ".bold().yellow(), s.bold().yellow());
+        eprintln!("{}{}", "WARN: ".bold().yellow(), s.bold().yellow());
     }
 }
 
