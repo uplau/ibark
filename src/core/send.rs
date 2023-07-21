@@ -133,12 +133,6 @@ pub fn exec(global: super::cmd::GlobalOptions, args: SendArgs) -> anyhow::Result
     let (pb_multi, pb_main) = super::cli::Main::create_multi_progress(conf.devices.len() as u64)?;
     let semaphore = Arc::new(Semaphore::new(conf.limit_conn as usize));
 
-    pb_multi.println(super::cli::Output::exec_string(&format!(
-        "Send -R {} -l {}",
-        super::bark::Remote::scheme_host_port(&conf.common.remote)?,
-        conf.limit_conn
-    )))?;
-
     let client = reqwest::Client::builder()
         .user_agent(conf.common.user_agent.as_ref())
         .build()?;
@@ -164,6 +158,12 @@ pub fn exec(global: super::cmd::GlobalOptions, args: SendArgs) -> anyhow::Result
                 req,
             ));
         }
+
+        pb_multi.println(super::cli::Output::exec_string(&format!(
+            "Send -R {} -l {}",
+            super::bark::Remote::scheme_host_port(&conf.common.remote)?,
+            conf.limit_conn
+        )))?;
 
         while let Some(v) = join_set.join_next().await {
             match v {
