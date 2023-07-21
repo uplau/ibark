@@ -10,7 +10,7 @@ use tokio::{sync::Semaphore, time};
 #[command(arg_required_else_help = true, version)]
 pub struct Main {
     /// If provided, outputs the completion file for given shell
-    #[arg(short, long = "GEN", value_name = "SHELL", value_enum)]
+    #[arg(short, long = "gen", value_name = "SHELL", value_enum)]
     pub generator: Option<clap_complete::Shell>,
 
     #[command(flatten)]
@@ -136,9 +136,9 @@ impl Main {
 
 pub struct Output;
 impl Output {
-    pub fn info() {
-        todo!()
-    }
+    // pub fn info() {
+    //     todo!()
+    // }
 
     pub fn exec(s: &str) {
         println!("{}", Self::exec_string(s));
@@ -193,7 +193,7 @@ mod tests {
         let (pb_multi, pb_main) = Main::create_multi_progress(vec.len() as u64)?;
         let limit_conn = 10;
         let semaphore = Arc::new(Semaphore::new(limit_conn));
-        pb_multi.println(Output::exec_string(&format!("Test -l {}", limit_conn)));
+        pb_multi.println(Output::exec_string(&format!("Test -l {}", limit_conn)))?;
 
         let mut join_set = task::JoinSet::new();
         Runtime::new()?.block_on(async {
