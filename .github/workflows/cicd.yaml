@@ -15,6 +15,7 @@ on:
     branches: [main]
 
   pull_request:
+    # https://github.com/orgs/community/discussions/25161#discussioncomment-3246673
     paths: [".cargo/**", "src/**", "tests/**", "Cargo.*", "CHANGELOG*"]
     branches: [main]
 
@@ -42,6 +43,8 @@ jobs:
 
   ci:
     name: Patrol
+    needs: [release_please]
+    if: ${{ !failure() && !cancelled() && !needs.release_please.outputs.created }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -61,6 +64,7 @@ jobs:
               echo "OPENSSL_SRC_PERL=C:/Strawberry/perl/bin/perl" | tee -a "$GITHUB_ENV"
               ;;
           esac
+          cargo update
 
       - name: Run tests
         run: cargo test --all-features --workspace
@@ -74,6 +78,7 @@ jobs:
   build:
     name: Build ${{ matrix.target }}
     needs: [ci]
+    if: ${{ !failure() && !cancelled() }}
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -111,6 +116,20 @@ jobs:
       - name: Prexec
         run: |
           ########## script ##########
+          # check ci status
+          case "${{ needs.ci.result }}" in
+            'success')
+              echo "success: ci passed"
+              ;;
+            'skipped')
+              echo "warn: skipped ci triggered by release_please.created"
+              ;;
+            *)
+              echo "error: ??need cancel??"
+              exit 1
+              ;;
+          esac
+
           case "${{ matrix.target }}" in
             *'-musl')
               echo "+ install musl-tools"
@@ -128,6 +147,8 @@ jobs:
           cargo_metadata="$(cargo metadata --no-deps --format-version 1)"
           echo "CRATE_NAME=$(echo $cargo_metadata | jq -r ".packages[0].name")" | tee -a "$GITHUB_ENV"
           echo "CRATE_VERSION=$(echo $cargo_metadata | jq -r ".packages[0].version")" | tee -a "$GITHUB_ENV"
+
+          cargo update
 
       - name: Build ${{ env.CRATE_NAME }} ${{ env.CRATE_VERSION }}
         run: |
@@ -182,26 +203,41 @@ jobs:
   manually_release:
     name: Manually release
     needs: [build]
-    if: contains(github.event_name, 'workflow_dispatch')
+    if: ${{ !failure() && !cancelled() && contains(github.event_name, 'workflow_dispatch') }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/download-artifact@v3
+
+      - name: Cleanup a ${{ inputs.tag_name }} release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          ########## script ##########
+          endpoint="repos/${{ github.repository }}/git/refs/tags/${{ inputs.tag_name }}"
+          gh api "$endpoint" > /dev/null && {
+            gh api "$endpoint" -X DELETE && echo "DELETE tag ${{ inputs.tag_name }}"
+
+            release_id="$(gh api "repos/${{ github.repository }}/releases/tags/${{ inputs.tag_name }}" --jq ".id" 2>/dev/null)"
+            [[ -n "$release_id" ]] && {
+              gh api "repos/${{ github.repository }}/releases/${release_id}" -X DELETE && echo "DELETE releases $release_id"
+            }
+          }
+          :
+
       - uses: softprops/action-gh-release@v1
         with:
           generate_release_notes: true
           prerelease: ${{ inputs.prerelease }}
           tag_name: ${{ inputs.tag_name }}
-          fail_on_unmatched_files: true
           files: |
-            artifact/*.tar.gz
-            artifact/*.zip
+            artifact/*
 
   automatic_release:
     name: Automatic release
     needs: [release_please, build]
-    if: needs.release_please.outputs.created
+    if: ${{ !failure() && !cancelled() && needs.release_please.outputs.created }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -209,8 +245,7 @@ jobs:
       - uses: actions/download-artifact@v3
       - uses: softprops/action-gh-release@v1
         with:
+          prerelease: false
           tag_name: ${{ needs.release_please.outputs.tag_name }}
-          fail_on_unmatched_files: true
           files: |
-            artifact/*.tar.gz
-            artifact/*.zip
+            artifact/*

@@ -1,9 +1,10 @@
 # iBark
 
-![GitHub workflow status](https://github.com/uplau/ibark/actions/workflows/cicd.yaml/badge.svg)
-![GitHub release (with filter)](https://img.shields.io/github/v/release/uplau/ibark)
+[![Views](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fuplau%2Fibark&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=Views&edge_flat=false)](https://hits.seeyoufarm.com)
+[![GitHub workflow status](https://github.com/uplau/ibark/actions/workflows/cicd.yaml/badge.svg)](https://github.com/uplau/ibark/actions/workflows/cicd.yaml)
+[![GitHub release (with filter)](https://img.shields.io/github/v/release/uplau/ibark)](https://github.com/uplau/ibark/releases/latest)
 ![GitHub all releases](https://img.shields.io/github/downloads/uplau/ibark/total)
-![License](https://img.shields.io/badge/license-Apache%2FMIT-blue.svg)
+[![License](https://img.shields.io/badge/license-MIT%2FApache--2.0-blue.svg)](./LICENSE-MIT)
 
 iBark is a fully featured [Bark](https://github.com/Finb/Bark) cross-platform command line tool written in Rust.
 
@@ -11,17 +12,19 @@ From now on, easily and securely send notifications to your apple devices from t
 
 ![demo](./.assets/demo.svg?raw=true)
 
-## Table of Contents
+## Table of contents
 
-- [Feature](#feature)
+- [Features](#features)
 - [Quick start](#quick-start)
 - [Install](#install)
 - [Usage](#usage)
 - [Configuration](#configuration)
 - [Example](#example)
-- [All contributors](#all-contributors)
+- [Contributing](#contributing)
+- [Contributors](#contributors)
+- [License](#license)
 
-## Feature
+## Features
 
 - [x] Ease of use in mind
 - [x] Shell completion `bash` `elvish` `fish` `powershell` `zsh`
@@ -155,9 +158,9 @@ devices:
 #   l: active  # or level, any null value will be formatted as 'active' to follow the upstream api
 # receives first character or full key, not case sensitive, here are a few exceptions
 contexts:
-  bdg: 1  # or badge
+  bdg: 1 # or badge
   cat: "" # or category, reserved field, no use yet
-  isa: 1  # or isarchive, any non-null value will be formatted as '1' to follow the upstream api
+  isa: 1 # or isarchive, any non-null value will be formatted as '1' to follow the upstream api
 
 # fallback: 10
 limit_conn: ...
@@ -253,19 +256,21 @@ $ ibark -g bash > /etc/bash_completion.d/completion_ibark
 $ source /etc/bash_completion.d/completion_ibark
 ```
 
-## All contributors
+## Contributing
 
-We greatly appreciate any contributions you may make.
+This repository was created with [rust-template](https://github.com/uplau/rust-template).
 
-Not just those who push the code, but those who contribute in any way.
+See the [contributing guidelines](./CONTRIBUTING.md) for more information.
 
-Thanks for being a part of us and always welcome the next contributor to join us!
+## Contributors
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
+<a href="https://github.com/uplau/ibark/graphs/contributors">
+<img src="https://contrib.rocks/image?repo=uplau/ibark&max=400&columns=20" />
+</a>
 
-<!-- markdownlint-restore -->
-<!-- prettier-ignore-end -->
+## License
 
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+iBark is licensed under either of the following, at your option:
+
+- [MIT License](./LICENSE-MIT)
+- [Apache-2.0 License](./LICENSE-APACHE)
